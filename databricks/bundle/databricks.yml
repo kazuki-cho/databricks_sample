@@ -1,0 +1,85 @@
+# bundle:
+#   name: dbt-github-bundle
+
+# include:
+#   - resources/*.yml
+#   - resources/jobs/*.yml
+# variables:
+#   git_url:
+#     description: "GitHub repository URL"
+#   serverless_warehouse_id:
+#     description: "Serverless SQL Warehouse ID"
+
+# targets:
+#   dev:
+#     mode: development
+#     workspace:
+#       host: https://dbc-ad5d8c80-5c45.cloud.databricks.com
+#       root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    
+#     variables:
+#       git_url: "https://github.com/kazuki-cho/databricks_sample.git"
+#       serverless_warehouse_id: "f727119535007e82"
+  
+#   prod:
+#     mode: production
+#     workspace:
+#       host: https://your-workspace.cloud.databricks.com
+#       root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    
+#     # 本番環境のサーバーレスコンピュートID
+#     variables:
+#       git_url: "https://github.com/kazuki-cho/databricks_sample.git"
+#       serverless_warehouse_id: "xyz789ghi012"  # 本番環境のID
+
+
+bundle:
+  name: adls_autoloader_project
+
+include:
+  - resources/jobs/*.yml
+
+variables:
+  # ADLS接続情報
+  storage_account:
+    description: "Azure Storage Account Name"
+  container_name:
+    description: "ADLS Container Name"
+  checkpoint_base_path:
+    description: "Checkpoint Base Path"
+  git_url:
+    description: "GitHub repository URL"
+  serverless_warehouse_id:
+    description: "Serverless SQL Warehouse ID"
+  
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      host: https://your-workspace.azuredatabricks.net
+      root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    
+    variables:
+      storage_account: "devstorageaccount"
+      container_name: "dev-data"
+      checkpoint_base_path: "abfss://dev-data@devstorageaccount.dfs.core.windows.net/checkpoints/"
+      git_url: "https://github.com/kazuki-cho/databricks_sample.git"
+      serverless_warehouse_id: "f727119535007e82"
+  
+  prod:
+    mode: production
+    workspace:
+      host: https://your-workspace.azuredatabricks.net
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    
+    variables:
+      storage_account: "prodstorageaccount"
+      container_name: "prod-data"
+      checkpoint_base_path: "abfss://prod-data@prodstorageaccount.dfs.core.windows.net/checkpoints/"
+      git_url: "https://github.com/kazuki-cho/databricks_sample.git"
+      serverless_warehouse_id: "f727119535007e82"
+    
+    run_as:
+      service_principal_name: "your-service-principal-id"
+

@@ -1,0 +1,54 @@
+resources:
+  jobs:
+    adls_autoloader_ingestion:
+      name: "[${bundle.target}] ADLS Auto Loader Ingestion"
+      
+      # ファイル到達トリガー
+      trigger:
+        file_arrival:
+          # コンテナ全体を監視
+          url: "abfss://${var.container_name}@${var.storage_account}.dfs.core.windows.net/"
+          min_time_between_triggers_seconds: 60
+      
+      tasks:
+        - task_key: ingest_csv_files
+          notebook_task:
+            notebook_path: ./notebooks/autoloader_ingest.py
+            source: WORKSPACE
+            base_parameters:
+              # トリガーされたファイルパス
+              triggered_file: "{{trigger.file_arrival.url}}"
+              # ベースパス
+              base_path: "abfss://${var.container_name}@${var.storage_account}.dfs.core.windows.net/"
+              # チェックポイントベースパス
+              checkpoint_base_path: "${var.checkpoint_base_path}"
+              # カタログ名
+              catalog_name: "${bundle.target}_catalog"
+          
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS3_v2"
+            autoscale:
+              min_workers: 2
+              max_workers: 8
+            spark_conf:
+              "spark.databricks.delta.optimizeWrite.enabled": "true"
+              "spark.databricks.delta.autoCompact.enabled": "true"
+              "spark.databricks.io.cache.enabled": "true"
+      
+      # 並列実行制御
+      max_concurrent_runs: 5
+      
+      # タイムアウト設定
+      timeout_seconds: 3600
+      
+      # 通知設定
+      email_notifications:
+        on_failure:
+          - data-team@company.com
+        on_success: []
+        no_alert_for_skipped_runs: true
+      
+      # リトライ設定
+      max_retries: 2
+      retry_on_timeout: true
