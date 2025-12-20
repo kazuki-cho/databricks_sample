@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    enqueue_job:
+      name: raw-ingest-enqueue
+      tasks:
+        - task_key: enqueue
+          new_cluster: ${resources.clusters.raw_ingest_cluster}
+          spark_python_task:
+            python_file: src/enqueue.py
+
+    worker_job:
+      name: raw-ingest-worker
+      max_concurrent_runs: 6
+      tasks:
+        - task_key: worker
+          new_cluster: ${resources.clusters.raw_ingest_cluster}
+          spark_python_task:
+            python_file: src/worker.py

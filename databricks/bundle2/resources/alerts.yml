@@ -1,0 +1,58 @@
+resources:
+  sql_alerts:
+
+    ingest_error_alert:
+      name: "Raw Ingest Error Alert"
+      query:
+        warehouse_id: ${var.sql_warehouse_id}
+        query: |
+          SELECT error_count FROM Raw.v_alert_ingest_error
+      condition:
+        op: ">"
+        threshold: 0
+      schedule:
+        interval: 5m
+      notifications:
+        - destination_id: ${var.alert_destination_id}
+
+    bad_records_alert:
+      name: "Raw Bad Records Alert"
+      query:
+        warehouse_id: ${var.sql_warehouse_id}
+        query: |
+          SELECT bad_rows FROM Raw.v_alert_bad_records
+      condition:
+        op: ">"
+        threshold: 0
+      schedule:
+        interval: 5m
+      notifications:
+        - destination_id: ${var.alert_destination_id}
+
+    bad_ratio_alert:
+      name: "Raw Bad Ratio SLA Alert"
+      query:
+        warehouse_id: ${var.sql_warehouse_id}
+        query: |
+          SELECT bad_ratio FROM Raw.v_alert_bad_ratio
+      condition:
+        op: ">"
+        threshold: 0.01
+      schedule:
+        interval: 15m
+      notifications:
+        - destination_id: ${var.alert_destination_id}
+
+    slow_ingest_alert:
+      name: "Raw Ingest Slow Alert"
+      query:
+        warehouse_id: ${var.sql_warehouse_id}
+        query: |
+          SELECT max_duration FROM Raw.v_alert_slow_ingest
+      condition:
+        op: ">"
+        threshold: 600
+      schedule:
+        interval: 10m
+      notifications:
+        - destination_id: ${var.alert_destination_id}

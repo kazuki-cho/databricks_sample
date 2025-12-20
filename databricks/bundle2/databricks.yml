@@ -1,0 +1,15 @@
+bundle:
+  name: raw-ingestion-bundle
+
+include:
+  - resources/*.yml
+
+variables:
+  sql_warehouse_id:
+    description: SQL Warehouse ID
+  alert_destination_id:
+    description: Alert notification destination ID
+
+targets:
+  dev:
+    default: true
