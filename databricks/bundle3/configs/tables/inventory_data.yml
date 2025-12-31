@@ -1,0 +1,25 @@
+table:
+  name: inventory_data
+  catalog: main
+  schema: bronze
+  write_mode: overwrite
+
+source:
+  container: raw-data
+  directory: "inventory/monthly/"
+  file_type: excel
+  
+  excel_options:
+    sheet_name: "在庫マスタ"
+    header: true
+
+columns:
+  - name: product_code
+    type: STRING
+    nullable: false
+    source_column: "商品コード"
+
+quality:
+  skip_validation: false
+  not_null_columns:
+    - product_code

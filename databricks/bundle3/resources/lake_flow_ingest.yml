@@ -1,0 +1,28 @@
+resources:
+  jobs:
+    lake_flow_ingest:
+      name: "Lake Flow Ingestion Job (CSV/Excel Builtin)"
+      tasks:
+        - task_key: ingest_file
+          notebook_task:
+            notebook_path: ./notebooks/lake_flow_ingest
+            base_parameters:
+              file_path: "{{trigger.file_path}}"
+          new_cluster:
+            spark_version: "17.1.x-scala2.12"  # Excel対応バージョン
+            node_type_id: "Standard_DS3_v2"
+            num_workers: 2
+            # Mavenライブラリ不要！
+        
+        - task_key: dbt_transform
+          depends_on:
+            - task_key: ingest_file
+          dbt_task:
+            project_directory: ./dbt
+            commands:
+              - "dbt run --select tag:bronze_to_silver"
+      
+      trigger:
+        file_arrival:
+          url: "abfss://raw-data@<storage>.dfs.core.windows.net/"
+          min_time_between_triggers_seconds: 60

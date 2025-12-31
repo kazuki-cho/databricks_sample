@@ -1,0 +1,7 @@
+targets:
+  dev:
+    workspace:
+      host: https://adb-YOUR-WORKSPACE-ID.azuredatabricks.net
+    variables:
+      storage_account: YOUR-STORAGE-ACCOUNT
+      container: raw-data

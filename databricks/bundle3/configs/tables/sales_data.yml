@@ -1,0 +1,32 @@
+table:
+  name: sales_data
+  catalog: main
+  schema: bronze
+  write_mode: overwrite
+
+source:
+  container: raw-data
+  directory: "sales/daily/"
+  file_type: csv
+  
+  csv_options:
+    compression: gzip
+    encoding: utf-8
+    delimiter: ","
+    header: true
+
+columns:
+  - name: sale_id
+    type: STRING
+    nullable: false
+    source_column: "SaleID"
+    
+  - name: amount
+    type: DECIMAL(10,2)
+    nullable: false
+    source_column: "Amount"
+
+quality:
+  skip_validation: false
+  not_null_columns:
+    - sale_id
