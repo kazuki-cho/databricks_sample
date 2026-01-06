@@ -1,0 +1,91 @@
+output:
+  path: "s3://your-bucket/test-data"
+  file_type: csv  # csv, parquet, delta
+  record_count: 250000000
+
+  csv_options:
+    compression: none  # none, gzip, bzip2
+    encoding: utf-8
+    delimiter: ","
+    header: true
+
+  # parquet_options:
+  #   compression: snappy  # none, snappy, gzip, lzo
+
+columns:
+  - name: "ID"
+    type: INT
+    nullable: false
+    duplicatable: false
+    value_min: 10000000000
+    value_max: 20000000000
+
+  - name: "FIRST NAME"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: first_name
+
+  - name: "LAST NAME"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: last_name
+
+  - name: "COUNTRY CODE"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: country_code
+
+  - name: "ZIP CODE"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: zip_code
+
+  - name: "STATE"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: state_code
+
+  - name: "CITY"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: city_name
+
+  - name: "PHONE"
+    type: STRING
+    nullable: true
+    duplicatable: true
+    value_type: phone_number
+
+  - name: "BIRTH DATE"
+    type: DATE
+    nullable: true
+    duplicatable: true
+    value_min: 1925-01-01
+    value_max: 2015-12-31
+
+  - name: "REGISTRATION DATE"
+    type: TIMESTAMP
+    nullable: true
+    duplicatable: true
+    value_min: 2020-01-01
+    value_max: 2024-12-31
+
+  - name: "MEMBER ID"
+    type: STRING
+    nullable: false
+    duplicatable: false
+    value_type: re
+    value_pattern: "^\\d{4}-\\d{4}-\\d{4}$"
+
+  - name: "BALANCE"
+    type: DOUBLE
+    nullable: true
+    duplicatable: true
+    value_min: 0.0
+    value_max: 100000.0
